@@ -8,8 +8,8 @@ class HideMyEmail:
     base_url_v1 = "https://p68-maildomainws.icloud.com/v1/hme"
     base_url_v2 = "https://p68-maildomainws.icloud.com/v2/hme"
     params = {
-        "clientBuildNumber": "2413Project28",
-        "clientMasteringNumber": "2413B20",
+        "clientBuildNumber": "2536Project32",
+        "clientMasteringNumber": "2536B20",
         "clientId": "",
         "dsid": "", # Directory Services Identifier (DSID) is a method of identifying AppleID accounts
     }
@@ -34,7 +34,7 @@ class HideMyEmail:
                 "Connection": "keep-alive",
                 "Pragma": "no-cache",
                 "Cache-Control": "no-cache",
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
                 "Content-Type": "text/plain",
                 "Accept": "*/*",
                 "Sec-GPC": "1",
@@ -44,6 +44,9 @@ class HideMyEmail:
                 "Sec-Fetch-Dest": "empty",
                 "Referer": "https://www.icloud.com/",
                 "Accept-Language": "en-US,en-GB;q=0.9,en;q=0.8,cs;q=0.7",
+                "sec-ch-ua": '"Brave";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"macOS"',
                 "Cookie": self.__cookies.strip(),
             },
             timeout=aiohttp.ClientTimeout(total=10),

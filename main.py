@@ -3,6 +3,7 @@ import datetime
 import os
 from typing import Union, List, Optional
 import re
+import time
 
 from rich.text import Text
 from rich.prompt import IntPrompt
@@ -13,6 +14,8 @@ from icloud import HideMyEmail
 
 
 MAX_CONCURRENT_TASKS = 10
+RATE_LIMIT_BATCH_SIZE = 5  # Apple's limit: 5 emails per batch
+RATE_LIMIT_WAIT_TIME = 2700  # 45 minutes in seconds
 
 
 class RichHideMyEmail(HideMyEmail):
@@ -81,6 +84,26 @@ class RichHideMyEmail(HideMyEmail):
 
         return filter(lambda e: e is not None, await asyncio.gather(*tasks))
 
+    async def _wait_with_countdown(self, seconds: int):
+        """Wait for specified seconds with a countdown display"""
+        from rich.live import Live
+        from rich.text import Text
+        
+        end_time = time.time() + seconds
+        
+        with Live(console=self.console, refresh_per_second=1) as live:
+            while time.time() < end_time:
+                remaining = int(end_time - time.time())
+                mins, secs = divmod(remaining, 60)
+                
+                text = Text()
+                text.append("⏳ Rate limit reached. Waiting ", style="bold yellow")
+                text.append(f"{mins:02d}:{secs:02d}", style="bold cyan")
+                text.append(" before next batch...", style="bold yellow")
+                
+                live.update(text)
+                await asyncio.sleep(1)
+
     async def generate(self, count: Optional[int]) -> List[str]:
         try:
             emails = []
@@ -95,21 +118,51 @@ class RichHideMyEmail(HideMyEmail):
             self.console.log(f"Generating {count} email(s)...")
             self.console.rule()
 
-            with self.console.status(f"[bold green]Generating iCloud email(s)..."):
-                while count > 0:
-                    batch = await self._generate(
-                        count if count < MAX_CONCURRENT_TASKS else MAX_CONCURRENT_TASKS
-                    )
-                    count -= MAX_CONCURRENT_TASKS
-                    emails += batch
+            total_to_generate = count
+            batches_needed = (count + RATE_LIMIT_BATCH_SIZE - 1) // RATE_LIMIT_BATCH_SIZE
+            current_batch = 0
+
+            while count > 0:
+                batch_size = min(count, RATE_LIMIT_BATCH_SIZE)
+                
+                self.console.log(f"[bold cyan]Batch {current_batch + 1}/{batches_needed}[/] - Generating {batch_size} email(s)...")
+                
+                with self.console.status(f"[bold green]Generating iCloud email(s)..."):
+                    batch = [*await self._generate(
+                        batch_size if batch_size < MAX_CONCURRENT_TASKS else MAX_CONCURRENT_TASKS
+                    )]
+                
+                # Check if batch was successful
+                if len(batch) == 0:
+                    # All failed - likely rate limited
+                    self.console.log(f"[bold red]✗[/] All emails in this batch were rate limited.")
+                    await self._wait_with_countdown(RATE_LIMIT_WAIT_TIME)
+                    self.console.log("[bold green]✓[/] Wait complete. Retrying batch...")
+                    self.console.rule()
+                    continue  # Retry this batch without counting it
+                
+                # Batch was at least partially successful
+                emails += batch
+                
+                # Save to file immediately after each batch
+                if len(batch) > 0:
+                    with open("emails.txt", "a+") as f:
+                        f.write(os.linesep.join(batch) + os.linesep)
+                
+                count -= len(batch)
+                current_batch += 1
+
+                # If there are more emails to generate, wait for the rate limit
+                if count > 0:
+                    self.console.log(f"[bold green]✓[/] Batch {current_batch} complete. {len(emails)}/{total_to_generate} emails generated so far.")
+                    await self._wait_with_countdown(RATE_LIMIT_WAIT_TIME)
+                    self.console.log("[bold green]✓[/] Wait complete. Continuing with next batch...")
+                    self.console.rule()
 
             if len(emails) > 0:
-                with open("emails.txt", "a+") as f:
-                    f.write(os.linesep.join(emails) + os.linesep)
-
                 self.console.rule()
                 self.console.log(
-                    f':star: Emails have been saved into the "emails.txt" file'
+                    f':star: All emails have been saved to the "emails.txt" file'
                 )
 
                 self.console.log(

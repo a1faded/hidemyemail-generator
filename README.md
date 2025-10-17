@@ -77,7 +77,7 @@ The script will automatically:
 > **Note:** You only need to do this once!
 
 ### Step 1: Install EditThisCookie Extension
-Download [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg) for Chrome/Edge
+Download [EditThisCookie](https://chromewebstore.google.com/detail/editthiscookie-v3/ojfebgpkimhlhcblbalbfjblapadhbol) for Chrome/Edge
 
 ### Step 2: Configure Export Format
 1. Go to [EditThisCookie settings](chrome-extension://fngmhnnpilhplaeedifhccceomclgfbg/options_pages/user_preferences.html)

@@ -35,10 +35,7 @@
 
 ## 🚀 Quick Start
 
-### Option 1: Pre-built Binaries (Easiest)
-Download ready-to-use binaries for Windows & ARM Macs from the [releases page](https://github.com/rtunazzz/hidemyemail-generator/releases).
-
-### Option 2: Run from Source
+### Run from Source
 
 **1. Clone the repository**
 ```bash

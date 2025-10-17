@@ -8,7 +8,7 @@ _You do need to have an active iCloud+ subscription to be able to generate iClou
 
 ## Usage
 
-You can get prebuild binaries for Windows & ARM Macs from the [releases page](https://github.com/rtunazzz/hidemyemail-generator/releases). Follow the guide steps 1 & 2 below if you'd like to run it from source, otherwise you can skip to the 3rd step - set your cookie and run.
+You can get prebuild binaries for Windows & ARM Macs from the [releases page](https://github.com/a1faded/hidemyemail-generator/releases). Follow the guide steps 1 & 2 below if you'd like to run it from source, otherwise you can skip to the 3rd step - set your cookie and run.
 
 Apple allows you to create 5 * # of people in your iCloud familly emails every 30 mins or so. From my experience, they cap the amount of iCloud emails you can generate at ~700.
 
@@ -27,7 +27,7 @@ git clone https://github.com/rtunazzz/hidemyemail-generator
 pip install -r requirements.txt
 ```
 
-3. [Save your cookie string](https://github.com/rtunazzz/hidemyemail-generator#getting-icloud-cookie-string)
+3. [Save your cookie string](https://github.com/a1faded/hidemyemail-generator#getting-icloud-cookie-string)
 
    > You only need to do this once 🙂
 
@@ -69,3 +69,4 @@ python main.py
 Licensed under the MIT License - see the [LICENSE file](./LICENSE) for more details.
 
 Made by **[rtuna](https://twitter.com/rtunazzz)**.
+TWEAKED BY **[A1FADED]**

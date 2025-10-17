@@ -18,7 +18,7 @@ Apple allows you to create 5 * # of people in your iCloud familly emails every 3
 1. Clone this repository
 
 ```bash
-git clone https://github.com/rtunazzz/hidemyemail-generator
+git clone https://github.com/a1faded/hidemyemail-generator
 ```
 
 2. Install requirements
